@@ -28,7 +28,7 @@ export const assistant = new Agent({
 
   // Mastra model router format: "provider/model-name".
   // Reads OPENAI_API_KEY from the environment for openai/* models.
-  model: process.env.MODEL ?? "anthropic/claude-sonnet-4-6",
+  model: process.env.MODEL ?? "openai/gpt-4o-mini",
 
   channels: {
     adapters: {
