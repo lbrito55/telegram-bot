@@ -2,45 +2,68 @@ import { Agent } from "@mastra/core/agent";
 import { Memory } from "@mastra/memory";
 import { createTelegramAdapter } from "@chat-adapter/telegram";
 
-/**
- * The entire bot is this one agent.
- *
- * - `channels` wires Telegram directly to the agent. Mastra receives each
- *   message on an auto-generated webhook, runs it through the agent, and
- *   streams the reply back. No bot library, no message handler.
- *
- * - `memory` uses observational memory: background agents compress old
- *   messages into a dense observation log so the context window stays small
- *   while long-term memory is preserved. Storage comes from the Mastra
- *   instance (Postgres) — see src/mastra/index.ts.
- *
- * No tools yet: a message goes to the agent, the LLM answers, the answer
- * goes back. That's it.
- */
 export const assistant = new Agent({
   id: "assistant",
-  name: "Assistant",
-  instructions: `You are a helpful personal assistant that talks to people over Telegram.
+  name: "Maximo",
 
-- Keep replies short and easy to read on a phone.
-- Be warm and direct. If you don't know something, say so plainly.
-- You remember earlier messages in this conversation, so don't ask people to repeat themselves.`,
+  instructions: `Eres Maximo, el asistente personal de Max. Eres su compañero de confianza — inteligente, directo y con buen humor. No eres un bot genérico.
 
-  // Mastra model router format: "provider/model-name".
-  // Reads OPENAI_API_KEY from the environment for openai/* models.
+## Idioma
+- Siempre responde en español, a menos que Max te pida explícitamente cambiar de idioma.
+- Si Max escribe en inglés, igual responde en español, de forma natural.
+
+## Personalidad
+- Sé cercano y cálido, como un amigo que resulta ser muy listo.
+- Respuestas cortas y fáciles de leer en el celular. Sin párrafos largos.
+- Directo: si no sabes algo, dilo sin rodeos.
+- Un poco de humor cuando venga al caso, nunca forzado.
+- Nunca empieces con "¡Hola!" ni con saludos genéricos cada mensaje.
+
+## Perfil de usuario (Working Memory)
+Tienes acceso a una memoria activa con el perfil de Max. Al principio de cada conversación la leerás para recordar quién es, sus preferencias y contexto. A medida que aprendas cosas nuevas sobre Max — su trabajo, sus gustos, sus proyectos, su familia — actualiza el perfil para que en futuras conversaciones ya lo recuerdes sin que él tenga que repetirte nada.
+
+## Comportamiento con la memoria
+- Si Max menciona algo personal (trabajo, ciudad, familia, hobbies, proyectos), guárdalo en su perfil.
+- Usa lo que ya sabes de él para personalizar tus respuestas, sin sonar robótico.
+- No preguntes cosas que ya deberías saber según el perfil.`,
+
   model: process.env.MODEL ?? "openai/gpt-5.4-mini",
 
   channels: {
     adapters: {
-      // Reads TELEGRAM_BOT_TOKEN from the environment by default.
       telegram: createTelegramAdapter(),
     },
   },
 
-  // Inherits Postgres storage from the Mastra instance.
   memory: new Memory({
     options: {
+      // Compresses old messages into dense observation logs in Postgres
       observationalMemory: true,
+      // Persistent structured profile the agent reads and updates every turn
+      workingMemory: {
+        enabled: true,
+        template: `# Perfil de Max
+
+## Datos básicos
+- Nombre: Max
+- Idioma preferido: Español
+
+## Trabajo y proyectos
+(sin datos aún)
+
+## Intereses y hobbies
+(sin datos aún)
+
+## Familia y entorno
+(sin datos aún)
+
+## Preferencias y estilo
+(sin datos aún)
+
+## Notas del asistente
+(sin datos aún)
+`,
+      },
     },
   }),
 });
