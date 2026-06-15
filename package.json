@@ -1,0 +1,28 @@
+{
+  "name": "mastra-telegram-bot",
+  "version": "0.1.0",
+  "description": "Telegram bot that relays straight to a Mastra agent via Channels, with observational memory in Postgres.",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "scripts": {
+    "dev": "mastra dev",
+    "build": "mastra build",
+    "start": "node .mastra/output/index.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ai-sdk/anthropic": "latest",
+    "@chat-adapter/telegram": "latest",
+    "@mastra/core": "latest",
+    "@mastra/memory": "latest",
+    "@mastra/pg": "latest"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "mastra": "latest",
+    "typescript": "^5.6.0"
+  }
+}
