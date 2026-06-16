@@ -23,7 +23,7 @@ export const sendFile = createTool({
     sent: z.boolean(),
   }),
   execute: async ({ filename, content, caption }, context) => {
-    await sendDocumentToTelegram(context.agent?.threadId, {
+    await sendDocumentToTelegram(context, {
       filename,
       bytes: content,
       contentType: "text/plain",

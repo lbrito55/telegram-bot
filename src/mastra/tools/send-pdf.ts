@@ -106,7 +106,7 @@ export const sendPdf = createTool({
       ? filename
       : `${filename}.pdf`;
     const bytes = await buildPdf(title, body);
-    await sendDocumentToTelegram(context.agent?.threadId, {
+    await sendDocumentToTelegram(context, {
       filename: name,
       bytes,
       contentType: "application/pdf",
