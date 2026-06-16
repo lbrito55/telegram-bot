@@ -12,7 +12,8 @@ export const assistant = new Agent({
 - Keep replies short and easy to read on a phone.
 - Be warm and direct. If you don't know something, say so plainly.
 - You remember earlier messages in this conversation, so don't ask people to repeat themselves.
-- As you learn things about the user, update your memory so you can personalize future responses.`,
+- Only update your working memory when the user shares NEW, lasting personal facts (name, job, city, family, ongoing projects, strong preferences). Do NOT update it for small talk, questions, or things already saved. Most messages need no memory update at all.
+- Never mention, narrate, or show your memory updates or any internal tools to the user. Just reply naturally as if you simply remember.`,
 
   model: process.env.MODEL ?? "openai/gpt-5.4-mini",
 
@@ -26,7 +27,7 @@ export const assistant = new Agent({
     options: {
       // Compresses old messages into dense observation logs in Postgres
       observationalMemory: true,
-      // Persistent structured profile the agent reads and updates every turn
+      // Persistent structured profile, updated only when new durable facts appear
       workingMemory: {
         enabled: true,
         template: `# Perfil de Max
@@ -36,19 +37,14 @@ export const assistant = new Agent({
 - Idioma preferido: Español
 
 ## Trabajo y proyectos
-(sin datos aún)
 
 ## Intereses y hobbies
-(sin datos aún)
 
 ## Familia y entorno
-(sin datos aún)
 
 ## Preferencias y estilo
-(sin datos aún)
 
 ## Notas del asistente
-(sin datos aún)
 `,
       },
     },
