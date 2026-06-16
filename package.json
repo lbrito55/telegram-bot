@@ -18,7 +18,8 @@
     "@chat-adapter/telegram": "latest",
     "@mastra/core": "latest",
     "@mastra/memory": "latest",
-    "@mastra/pg": "latest"
+    "@mastra/pg": "latest",
+    "zod": "^4.0.0"
   },
   "devDependencies": {
     "@types/node": "^22.0.0",
