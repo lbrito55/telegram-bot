@@ -20,7 +20,6 @@
     "@mastra/memory": "latest",
     "@mastra/observability": "^1.14.1",
     "@mastra/pg": "latest",
-    "pdf-lib": "^1.17.1",
     "zod": "^4.0.0"
   },
   "devDependencies": {
