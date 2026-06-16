@@ -19,6 +19,7 @@
     "@mastra/core": "latest",
     "@mastra/memory": "latest",
     "@mastra/pg": "latest",
+    "pdf-lib": "^1.17.1",
     "zod": "^4.0.0"
   },
   "devDependencies": {
