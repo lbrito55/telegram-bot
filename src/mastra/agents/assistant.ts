@@ -1,6 +1,11 @@
 import { Agent } from "@mastra/core/agent";
 import { Memory } from "@mastra/memory";
 import { createTelegramAdapter } from "@chat-adapter/telegram";
+import { openai } from "@ai-sdk/openai";
+
+// MODEL may be "openai/gpt-5.4-mini" (router style) or just "gpt-5.4-mini".
+// We use the OpenAI Responses API explicitly so the native web_search tool works.
+const MODEL_NAME = (process.env.MODEL ?? "gpt-5.4-mini").replace(/^openai\//, "");
 
 export const assistant = new Agent({
   id: "assistant",
@@ -14,6 +19,7 @@ export const assistant = new Agent({
 - Cálido pero sin exagerar. Nada de spam de emojis, ni relleno animado, ni listas de "puedo ayudarte con…".
 - Cuando Max te salude o escriba /start, salúdalo breve y natural y espera a que te diga qué necesita. No enumeres tus capacidades.
 - Si no sabes algo, dilo sin rodeos.
+- Tienes búsqueda web: úsala por tu cuenta cuando necesites datos actuales, precios, noticias o cualquier cosa que no esté en tu conocimiento. No anuncies que vas a buscar, solo responde con la información.
 
 ## Memoria (la gestionas tú solo)
 - Mantienes un perfil privado de Max y recuerdas la conversación. Usa tu propio criterio sobre qué vale la pena guardar.
@@ -29,7 +35,12 @@ export const assistant = new Agent({
 
 Actúas con criterio propio. Max no debería tener que decirte cuándo recordar algo, cuándo retomar un tema ni cómo comportarte: ese es tu trabajo.`,
 
-  model: process.env.MODEL ?? "openai/gpt-5.4-mini",
+  model: openai.responses(MODEL_NAME),
+
+  // Native OpenAI web search. The agent decides on its own when to use it.
+  tools: {
+    web_search: openai.tools.webSearch(),
+  },
 
   channels: {
     adapters: {
